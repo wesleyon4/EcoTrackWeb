@@ -8,7 +8,23 @@
 
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "../lib/queryClient";
-import { Product } from "../../shared/schema";
+
+// Product type definition (copied from schema.ts to avoid import errors)
+// NOTE: To use the actual schema, you'll need to fix import paths in your project
+// CONFIGURATION REQUIRED: Update this if your schema changes
+interface Product {
+  id: number;
+  barcode: string;
+  name: string;
+  brand: string;
+  carbonFootprint?: number;
+  materials?: any;
+  recyclability?: string;
+  ecoScore?: string;
+  ecoScoreValue?: number;
+  imageUrl?: string;
+  createdAt: Date;
+}
 
 /**
  * Main hook that provides access to all product-related data operations

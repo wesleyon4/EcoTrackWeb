@@ -11,65 +11,45 @@ const SideNavigation = ({ onScan }: SideNavigationProps) => {
     <nav className="hidden md:block fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-neutral-light overflow-y-auto">
       <div className="px-4 py-4">
         <div className="space-y-1">
-          <Link href="/">
-            <a
-              className={`flex items-center py-2 px-4 w-full rounded-lg ${
+          <Link href="/" className={`flex items-center py-2 px-4 w-full rounded-lg ${
                 location === "/"
                   ? "bg-primary bg-opacity-10 text-primary"
                   : "hover:bg-neutral-lightest"
-              }`}
-            >
+              }`}>
               <span className="material-icons mr-3">home</span>
               <span className="font-medium">Home</span>
-            </a>
           </Link>
-          <Link href="/scan">
-            <a
-              className={`flex items-center py-2 px-4 w-full rounded-lg ${
+          <Link href="/scan" className={`flex items-center py-2 px-4 w-full rounded-lg ${
                 location === "/scan"
                   ? "bg-primary bg-opacity-10 text-primary"
                   : "hover:bg-neutral-lightest"
-              }`}
-            >
+              }`}>
               <span className="material-icons mr-3">explore</span>
               <span className="font-medium">Discover Products</span>
-            </a>
           </Link>
-          <Link href="/recycling">
-            <a
-              className={`flex items-center py-2 px-4 w-full rounded-lg ${
+          <Link href="/recycling" className={`flex items-center py-2 px-4 w-full rounded-lg ${
                 location === "/recycling"
                   ? "bg-primary bg-opacity-10 text-primary"
                   : "hover:bg-neutral-lightest"
-              }`}
-            >
+              }`}>
               <span className="material-icons mr-3">place</span>
               <span className="font-medium">Recycling Map</span>
-            </a>
           </Link>
-          <Link href="/learn">
-            <a
-              className={`flex items-center py-2 px-4 w-full rounded-lg ${
+          <Link href="/learn" className={`flex items-center py-2 px-4 w-full rounded-lg ${
                 location === "/learn"
                   ? "bg-primary bg-opacity-10 text-primary"
                   : "hover:bg-neutral-lightest"
-              }`}
-            >
+              }`}>
               <span className="material-icons mr-3">school</span>
               <span className="font-medium">Learn</span>
-            </a>
           </Link>
-          <Link href="/profile">
-            <a
-              className={`flex items-center py-2 px-4 w-full rounded-lg ${
+          <Link href="/profile" className={`flex items-center py-2 px-4 w-full rounded-lg ${
                 location === "/profile"
                   ? "bg-primary bg-opacity-10 text-primary"
                   : "hover:bg-neutral-lightest"
-              }`}
-            >
+              }`}>
               <span className="material-icons mr-3">person</span>
               <span className="font-medium">My Profile</span>
-            </a>
           </Link>
         </div>
 

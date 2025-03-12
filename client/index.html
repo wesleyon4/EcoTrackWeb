@@ -24,9 +24,26 @@
       height: 8px;
     }
   </style>
+  <!-- Debug for troubleshooting -->
+  <script>
+    console.log("HTML document loaded");
+    window.addEventListener('DOMContentLoaded', function() {
+      console.log("DOM content loaded");
+    });
+  </script>
 </head>
 <body>
+  <!-- Application root container -->
   <div id="root"></div>
+  
+  <!-- 
+    IMPORTANT: This script path loads the React application.
+    
+    If you're experiencing blank pages, this might be an issue with:
+    1. The path to main.tsx being incorrect
+    2. JavaScript errors preventing the app from rendering
+    3. Missing environment variables needed for API integration
+  -->
   <script type="module" src="/client/src/main.tsx"></script>
 </body>
 </html>

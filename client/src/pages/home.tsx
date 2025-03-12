@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useProducts } from "../hooks/useProducts";
 import { useQuery } from "@tanstack/react-query";
-import { Article, Product, RecyclingCenter } from "../../shared/schema";
+import { Article, Product, RecyclingCenter } from "@shared/schema";
 import ProductCard from "../components/products/ProductCard";
 import ArticleCard from "../components/learn/ArticleCard";
 import RecyclingCenterCard from "../components/recycling/RecyclingCenterCard";

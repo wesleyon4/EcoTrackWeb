@@ -47,7 +47,7 @@ async function main() {
   // Use environment port or default to 5000
   // Bind to 0.0.0.0 to make the server accessible from all network interfaces
   const port = process.env.PORT || 5000;
-  server.listen(port, "0.0.0.0", () => {
+  server.listen(Number(port), "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
 }

@@ -1,7 +1,21 @@
 import { useState } from "react";
 import { useToast } from "./use-toast";
 import { apiRequest } from "../lib/queryClient";
-import { Product } from "../../shared/schema";
+
+// Temporary Product interface until shared schema import is fixed
+interface Product {
+  id: number;
+  barcode: string;
+  name: string;
+  brand: string;
+  ecoScore: string;
+  ecoScoreValue?: number;
+  carbonFootprint?: number;
+  materials?: string[];
+  recyclability?: string;
+  imageUrl?: string;
+  createdAt: Date;
+}
 
 export const useScan = () => {
   const [isScanning, setIsScanning] = useState(false);

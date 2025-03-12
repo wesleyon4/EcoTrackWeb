@@ -5,6 +5,7 @@
  * It initializes the React application, applies global styles, and renders the App component.
  */
 
+import React from "react"; // Explicitly import React for JSX support
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
@@ -91,5 +92,18 @@ styles.textContent = `
 // Apply the styles to the document
 document.head.appendChild(styles);
 
-// Initialize the React application by rendering the App component into the root element
-createRoot(document.getElementById("root")!).render(<App />);
+// Make sure the root element exists
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+  console.error("Root element not found! Make sure there is a <div id='root'></div> in your HTML.");
+} else {
+  // Initialize the React application by rendering the App component into the root element
+  createRoot(rootElement).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
+
+// Add this for debugging
+console.log("Main.tsx loaded and executed");
