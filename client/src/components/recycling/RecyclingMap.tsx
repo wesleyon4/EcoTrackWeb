@@ -132,3 +132,66 @@ const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
 };
 
 export default RecyclingMap;
+import React from "react";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { RecyclingCenter } from "../../../shared/schema";
+
+// Map container style
+const containerStyle = {
+  width: "100%",
+  height: "300px",
+  borderRadius: "0.5rem",
+};
+
+// Default center location if user location not available
+const defaultCenter = {
+  lat: 37.7749,
+  lng: -122.4194, // San Francisco as default
+};
+
+interface RecyclingMapProps {
+  userLocation?: { lat: number; lng: number };
+  centers?: RecyclingCenter[];
+}
+
+const RecyclingMap: React.FC<RecyclingMapProps> = ({ userLocation, centers = [] }) => {
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+  });
+
+  const center = userLocation && userLocation.lat && userLocation.lng
+    ? userLocation
+    : defaultCenter;
+
+  if (!isLoaded) return <div className="bg-neutral-lightest rounded h-[300px] flex items-center justify-center">Loading map...</div>;
+
+  return (
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={12}
+    >
+      {/* User location marker */}
+      {userLocation && userLocation.lat && userLocation.lng && (
+        <Marker
+          position={userLocation}
+          icon={{
+            url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+          }}
+        />
+      )}
+      
+      {/* Recycling centers markers */}
+      {centers.map((center) => (
+        <Marker
+          key={center.id}
+          position={{ lat: center.lat, lng: center.lng }}
+          title={center.name}
+        />
+      ))}
+    </GoogleMap>
+  );
+};
+
+export default RecyclingMap;

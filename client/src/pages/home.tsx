@@ -47,12 +47,13 @@ const Home = () => {
           <p className="mb-4">
             Scan products, discover their impact, and find eco-friendly alternatives.
           </p>
-          <Link href="/scan">
-            <Button className="bg-accent hover:bg-accent-dark text-neutral-dark font-semibold py-2 px-6 rounded-full transition-colors flex items-center">
-              <span className="material-icons mr-2">qr_code_scanner</span>
-              <span>Start Scanning</span>
-            </Button>
-          </Link>
+          <Button 
+            onClick={() => window.location.href = '/scan'} 
+            className="bg-accent hover:bg-accent-dark text-neutral-dark font-semibold py-2 px-6 rounded-full transition-colors flex items-center"
+          >
+            <span className="material-icons mr-2">qr_code_scanner</span>
+            <span>Start Scanning</span>
+          </Button>
         </div>
       </div>
 
