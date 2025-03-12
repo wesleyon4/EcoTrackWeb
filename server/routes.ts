@@ -1,11 +1,33 @@
+/**
+ * API Routes Configuration
+ * 
+ * This file defines all the REST API endpoints for the Eco-Track-Web application.
+ * It organizes routes into logical sections for users, authentication, products,
+ * scans, articles, and recycling centers.
+ */
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { insertUserSchema, insertProductSchema, insertScanSchema, insertArticleSchema, insertRecyclingCenterSchema } from "@shared/schema";
 
+/**
+ * Register all API routes with the Express application
+ * @param app - Express application instance
+ * @returns HTTP server instance
+ */
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Users API Routes
+  /**
+   * USERS API ROUTES
+   * Endpoints for user account management and profile information
+   */
+  
+  /**
+   * GET /api/users/me - Retrieve the currently authenticated user
+   * Returns user data without the password field
+   * In a production app, this would verify session/authentication tokens
+   */
   app.get("/api/users/me", async (req, res) => {
     try {
       // This route would normally check for a valid session
@@ -24,9 +46,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Auth API Routes
+  /**
+   * AUTHENTICATION API ROUTES
+   * Endpoints for user registration, login, and logout
+   */
+  
+  /**
+   * POST /api/auth/register - Create a new user account
+   * Validates input data using Zod schema
+   * Prevents duplicate usernames
+   * Returns the new user data without the password
+   */
   app.post("/api/auth/register", async (req, res) => {
     try {
+      // Validate request data against the schema
       const validatedData = insertUserSchema.parse(req.body);
       
       // Check if username already exists
@@ -49,6 +82,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * POST /api/auth/login - Authenticate a user
+   * Validates credentials and returns user data on success
+   * In a production app, would create a session or JWT token
+   */
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = req.body;
@@ -76,12 +114,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * POST /api/auth/logout - Log out the current user
+   * In a production app, would invalidate session or token
+   */
   app.post("/api/auth/logout", async (req, res) => {
     // This route would normally invalidate the session
     res.json({ message: "Logged out successfully" });
   });
 
-  // Products API Routes
+  /**
+   * PRODUCTS API ROUTES
+   * Endpoints for product information and management
+   */
+  
+  /**
+   * GET /api/products - Retrieve all products
+   * Returns an array of product objects
+   */
   app.get("/api/products", async (req, res) => {
     try {
       const products = await storage.getProducts();
@@ -91,6 +141,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * GET /api/products/:id - Retrieve a product by ID
+   * Returns a single product or 404 if not found
+   */
   app.get("/api/products/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -109,6 +163,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * GET /api/products/barcode/:barcode - Retrieve a product by barcode
+   * Central to the scanning feature of the app
+   * Returns a single product or 404 if not found
+   */
   app.get("/api/products/barcode/:barcode", async (req, res) => {
     try {
       const barcode = req.params.barcode;
@@ -124,6 +183,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * GET /api/products/search - Search for products
+   * Uses query parameter 'q' for search term
+   * Returns an array of matching products
+   */
   app.get("/api/products/search", async (req, res) => {
     try {
       const query = req.query.q as string;
@@ -138,6 +202,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * POST /api/products - Create a new product
+   * Validates input using product schema
+   * Returns the created product
+   */
   app.post("/api/products", async (req, res) => {
     try {
       const validatedData = insertProductSchema.parse(req.body);
@@ -151,7 +220,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Scans API Routes
+  /**
+   * SCANS API ROUTES
+   * Endpoints for product scan history and recording
+   */
+  
+  /**
+   * GET /api/scans/recent - Get recently scanned products
+   * Returns an array of product objects (not scan records)
+   */
   app.get("/api/scans/recent", async (req, res) => {
     try {
       const recentScans = await storage.getRecentScans();
@@ -161,6 +238,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * POST /api/scans - Record a new product scan
+   * Validates input using scan schema
+   * Returns the created scan record
+   */
   app.post("/api/scans", async (req, res) => {
     try {
       const validatedData = insertScanSchema.parse(req.body);
@@ -174,7 +256,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Articles API Routes
+  /**
+   * ARTICLES API ROUTES
+   * Endpoints for educational content about sustainability
+   */
+  
+  /**
+   * GET /api/articles - Retrieve all educational articles
+   * Returns an array of article objects
+   */
   app.get("/api/articles", async (req, res) => {
     try {
       const articles = await storage.getArticles();
@@ -184,6 +274,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * GET /api/articles/:id - Retrieve an article by ID
+   * Returns a single article or 404 if not found
+   */
   app.get("/api/articles/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -202,7 +296,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Recycling API Routes
+  /**
+   * RECYCLING API ROUTES
+   * Endpoints for recycling center information
+   */
+  
+  /**
+   * GET /api/recycling - Find recycling centers near location
+   * Requires latitude and longitude
+   * Optional filters for material type and result limit
+   */
   app.get("/api/recycling", async (req, res) => {
     try {
       const lat = parseFloat(req.query.lat as string);
@@ -221,6 +324,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * GET /api/recycling/:id - Retrieve a recycling center by ID
+   * Returns a single recycling center or 404 if not found
+   */
   app.get("/api/recycling/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -239,6 +346,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * GET /api/recycling/materials - Get list of recyclable materials
+   * Used for filtering recycling centers
+   */
   app.get("/api/recycling/materials", async (req, res) => {
     try {
       const materials = await storage.getAcceptedMaterials();
@@ -248,6 +359,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create and return the HTTP server
   const httpServer = createServer(app);
   return httpServer;
 }
