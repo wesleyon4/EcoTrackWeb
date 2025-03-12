@@ -1,111 +1,133 @@
-import { useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+
+import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { RecyclingCenter } from "@shared/schema";
 
-// Fix for marker icons in React Leaflet
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import markerRetina from "leaflet/dist/images/marker-icon-2x.png";
+// Fix Leaflet icon issue
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 
-// Temporary RecyclingCenter interface until schema import issue is fixed
-interface RecyclingCenter {
-  id: number;
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  acceptedMaterials: string[];
-  operatingHours: string;
-  distance?: number;
-}
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+});
 
 interface RecyclingMapProps {
   centers: RecyclingCenter[];
-  userLocation?: { lat: number; lng: number };
+  userLocation: {
+    lat: number;
+    lng: number;
+  };
 }
 
-// Fix Leaflet default icon paths
-const DefaultIcon = new L.Icon({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerRetina,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
 const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
-  // Create custom icon using L.divIcon for better performance
-  const customIcon = useMemo(() => {
-    return new L.Icon({
-      iconUrl: markerIcon,
-      iconRetinaUrl: markerRetina,
-      shadowUrl: markerShadow,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
-  }, []);
+  const mapRef = useRef<L.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
-  // Default to NYC if no user location
-  const defaultCenter = userLocation || { lat: 40.7128, lng: -74.0060 };
-  
+  useEffect(() => {
+    if (!mapContainerRef.current || mapRef.current) return;
+
+    // Initialize map
+    const map = L.map(mapContainerRef.current).setView(
+      [userLocation.lat, userLocation.lng],
+      12
+    );
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // Add user location marker
+    const userIcon = L.divIcon({
+      html: `<div style="background-color: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white;"></div>`,
+      className: 'user-location-marker',
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+    });
+
+    L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
+      .addTo(map)
+      .bindPopup("Your Location")
+      .openPopup();
+
+    // Store map reference
+    mapRef.current = map;
+
+    // Cleanup on unmount
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [userLocation]);
+
+  // Add recycling center markers when centers data is available
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Clear existing markers
+    mapRef.current.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        mapRef.current?.removeLayer(layer);
+      }
+    });
+
+    // Re-add user location
+    const userIcon = L.divIcon({
+      html: `<div style="background-color: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white;"></div>`,
+      className: 'user-location-marker',
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+    });
+
+    L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
+      .addTo(mapRef.current)
+      .bindPopup("Your Location");
+
+    // Add recycling center markers
+    centers.forEach((center) => {
+      const recycleIcon = L.divIcon({
+        html: `<div style="background-color: #10b981; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center;">
+                <span style="color: white; font-size: 12px; font-weight: bold;">♻️</span>
+              </div>`,
+        className: 'recycle-location-marker',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+      });
+
+      L.marker([center.lat, center.lng], { icon: recycleIcon })
+        .addTo(mapRef.current!)
+        .bindPopup(`
+          <div>
+            <strong>${center.name}</strong>
+            <p>${center.address}</p>
+            <p>Materials: ${center.acceptedMaterials.join(", ")}</p>
+          </div>
+        `);
+    });
+
+    // Adjust view to fit all markers if there are recycling centers
+    if (centers.length > 0) {
+      const allPoints = [
+        [userLocation.lat, userLocation.lng],
+        ...centers.map(center => [center.lat, center.lng])
+      ] as [number, number][];
+      
+      if (allPoints.length > 1) {
+        mapRef.current.fitBounds(L.latLngBounds(allPoints));
+      }
+    }
+  }, [centers, userLocation]);
+
   return (
-    <div style={{ height: "100%", width: "100%" }}>
-      {/* @ts-ignore - Ignoring type errors for react-leaflet components */}
-      <MapContainer
-        center={[defaultCenter.lat, defaultCenter.lng]}
-        zoom={11}
-        style={{ height: "100%", width: "100%" }}
-      >
-        {/* @ts-ignore - Ignoring type errors for react-leaflet components */}
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        
-        {/* User Location Marker */}
-        {userLocation && (
-          /* @ts-ignore - Ignoring type errors for react-leaflet components */
-          <Marker 
-            position={[userLocation.lat, userLocation.lng]}
-            icon={customIcon}
-          >
-            <Popup>
-              <div className="text-sm">
-                <strong>Your Location</strong>
-              </div>
-            </Popup>
-          </Marker>
-        )}
-        
-        {/* Recycling Centers Markers */}
-        {centers.map((center) => (
-          /* @ts-ignore - Ignoring type errors for react-leaflet components */
-          <Marker 
-            key={center.id}
-            position={[center.latitude, center.longitude]}
-            icon={customIcon}
-          >
-            <Popup>
-              <div className="text-sm">
-                <strong>{center.name}</strong>
-                <p className="mt-1">{center.address}</p>
-                <p className="mt-1 text-xs text-neutral-medium">{center.operatingHours}</p>
-                {center.distance && (
-                  <p className="mt-1 text-xs text-primary font-semibold">
-                    {center.distance.toFixed(1)} miles away
-                  </p>
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
-    </div>
+    <div 
+      ref={mapContainerRef} 
+      style={{ width: "100%", height: "100%" }}
+      className="leaflet-map-container"
+    />
   );
 };
 

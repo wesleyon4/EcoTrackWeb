@@ -92,18 +92,21 @@ styles.textContent = `
 // Apply the styles to the document
 document.head.appendChild(styles);
 
-// Make sure the root element exists
+// Get the root element from the DOM
 const rootElement = document.getElementById("root");
+
 if (!rootElement) {
-  console.error("Root element not found! Make sure there is a <div id='root'></div> in your HTML.");
+  console.error("Failed to find the root element");
 } else {
-  // Initialize the React application by rendering the App component into the root element
-  createRoot(rootElement).render(
+  // Initialize React
+  const root = createRoot(rootElement);
+
+  // Render the App component to the root
+  root.render(
     <React.StrictMode>
       <App />
     </React.StrictMode>
   );
-}
 
-// Add this for debugging
-console.log("Main.tsx loaded and executed");
+  console.log("App initialized successfully");
+}
