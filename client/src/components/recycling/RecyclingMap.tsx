@@ -14,10 +14,10 @@ L.Icon.Default.mergeOptions({
 
 interface RecyclingMapProps {
   centers: RecyclingCenter[];
-  userLocation: {
+  userLocation?: {
     lat: number;
     lng: number;
-  };
+  } | null;
 }
 
 const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
@@ -25,7 +25,7 @@ const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!mapContainerRef.current || mapRef.current) return;
+    if (!mapContainerRef.current || mapRef.current || !userLocation) return;
 
     // Initialize map
     const map = L.map(mapContainerRef.current).setView(
@@ -65,7 +65,7 @@ const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
 
   // Add recycling center markers when centers data is available
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !userLocation) return;
 
     // Clear existing markers
     mapRef.current.eachLayer((layer) => {
@@ -97,13 +97,13 @@ const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
         iconAnchor: [15, 15],
       });
 
-      L.marker([center.lat, center.lng], { icon: recycleIcon })
+      L.marker([center.latitude, center.longitude], { icon: recycleIcon })
         .addTo(mapRef.current!)
         .bindPopup(`
           <div>
             <strong>${center.name}</strong>
             <p>${center.address}</p>
-            <p>Materials: ${center.acceptedMaterials.join(", ")}</p>
+            <p>Materials: ${Array.isArray(center.acceptedMaterials) ? center.acceptedMaterials.join(", ") : 'Various'}</p>
           </div>
         `);
     });
@@ -112,7 +112,7 @@ const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
     if (centers.length > 0) {
       const allPoints = [
         [userLocation.lat, userLocation.lng],
-        ...centers.map(center => [center.lat, center.lng])
+        ...centers.map(center => [center.latitude, center.longitude])
       ] as [number, number][];
 
       if (allPoints.length > 1) {
@@ -120,6 +120,21 @@ const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
       }
     }
   }, [centers, userLocation]);
+
+  if (!userLocation) {
+    return (
+      <div className="w-full h-full bg-neutral-light flex items-center justify-center">
+        <div className="text-center">
+          <span className="material-icons text-4xl text-neutral-medium">
+            map
+          </span>
+          <p className="text-neutral-medium mt-2">
+            Please enable location services to see the map
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -131,78 +146,3 @@ const RecyclingMap = ({ centers, userLocation }: RecyclingMapProps) => {
 };
 
 export default RecyclingMap;
-
-import React from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import { RecyclingCenter } from "../../../shared/schema";
-
-// Map container style
-const containerStyle = {
-  width: "100%",
-  height: "300px",
-  borderRadius: "0.5rem",
-};
-
-// Default center location if user location not available
-const defaultCenter = {
-  lat: 37.7749,
-  lng: -122.4194, // San Francisco as default
-};
-
-interface RecyclingMapProps {
-  userLocation?: { lat?: number; lng?: number } | null;
-  centers?: RecyclingCenter[];
-}
-
-const RecyclingMapGoogle: React.FC<RecyclingMapProps> = ({ userLocation, centers = [] }) => {
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
-  });
-
-  // Determine if we have valid coordinates for user location
-  const hasValidUserLocation = userLocation &&
-    typeof userLocation.lat === 'number' &&
-    typeof userLocation.lng === 'number';
-
-  // Use default center if user location is not valid
-  const center = hasValidUserLocation ? userLocation : defaultCenter;
-
-  if (!isLoaded) {
-    return (
-      <div className="bg-neutral-lightest rounded h-[300px] flex items-center justify-center">
-        Loading map...
-      </div>
-    );
-  }
-
-  return (
-    <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
-      {/* User location marker - only show if coordinates are valid */}
-      {hasValidUserLocation && (
-        <Marker
-          position={center}
-          icon={{
-            url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-          }}
-        />
-      )}
-
-      {/* Recycling centers markers - filter out any with invalid coordinates */}
-      {centers
-        .filter(center =>
-          typeof center.lat === 'number' &&
-          typeof center.lng === 'number'
-        )
-        .map((center) => (
-          <Marker
-            key={center.id}
-            position={{ lat: center.lat, lng: center.lng }}
-            title={center.name}
-          />
-        ))}
-    </GoogleMap>
-  );
-};
-
-export default RecyclingMapGoogle;
