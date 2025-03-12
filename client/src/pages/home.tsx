@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts } from "../hooks/useProducts";
 import { useQuery } from "@tanstack/react-query";
-import { Article, Product, RecyclingCenter } from "@shared/schema";
-import ProductCard from "@/components/products/ProductCard";
-import ArticleCard from "@/components/learn/ArticleCard";
-import RecyclingCenterCard from "@/components/recycling/RecyclingCenterCard";
-import RecyclingMap from "@/components/recycling/RecyclingMap";
-import { useRecycling } from "@/hooks/useRecycling";
-import { Button } from "@/components/ui/button";
+import { Article, Product, RecyclingCenter } from "../../shared/schema";
+import ProductCard from "../components/products/ProductCard";
+import ArticleCard from "../components/learn/ArticleCard";
+import RecyclingCenterCard from "../components/recycling/RecyclingCenterCard";
+import RecyclingMap from "../components/recycling/RecyclingMap";
+import { useRecycling } from "../hooks/useRecycling";
+import { Button } from "../components/ui/button";
 import { Link } from "wouter";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "../components/ui/skeleton";
 
 const Home = () => {
   const { useRecentScans } = useProducts();

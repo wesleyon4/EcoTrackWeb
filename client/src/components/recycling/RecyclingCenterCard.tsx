@@ -1,4 +1,4 @@
-import { RecyclingCenter } from "@shared/schema";
+import { RecyclingCenter } from "../../shared/schema";
 
 interface RecyclingCenterCardProps {
   center: RecyclingCenter;

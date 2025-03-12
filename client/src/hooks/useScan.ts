@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { Product } from "@shared/schema";
+import { useToast } from "./use-toast";
+import { apiRequest } from "../lib/queryClient";
+import { Product } from "../../shared/schema";
 
 export const useScan = () => {
   const [isScanning, setIsScanning] = useState(false);

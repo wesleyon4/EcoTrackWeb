@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Product } from "@shared/schema";
+import { Product } from "../../shared/schema";
 
 interface ProductCardProps {
   product: Product;

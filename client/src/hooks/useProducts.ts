@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Product } from "@shared/schema";
+import { queryClient, apiRequest } from "../lib/queryClient";
+import { Product } from "../../shared/schema";
 
 export const useProducts = () => {
   // Get recent scans

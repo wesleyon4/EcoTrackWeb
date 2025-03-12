@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "../../components/ui/input";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");

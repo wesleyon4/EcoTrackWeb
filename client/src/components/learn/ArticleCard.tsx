@@ -1,4 +1,4 @@
-import { Article } from "@shared/schema";
+import { Article } from "../../shared/schema";
 
 interface ArticleCardProps {
   article: Article;

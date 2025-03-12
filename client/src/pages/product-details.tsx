@@ -1,8 +1,8 @@
 import { useParams, Link } from "wouter";
-import { useProducts } from "@/hooks/useProducts";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useProducts } from "../hooks/useProducts";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Skeleton } from "../components/ui/skeleton";
 import { useEffect } from "react";
 
 const ProductDetails = () => {

@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useProducts } from "@/hooks/useProducts";
-import { useScan } from "@/hooks/useScan";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import ProductCard from "@/components/products/ProductCard";
-import { Product } from "@shared/schema";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
+import { useProducts } from "../hooks/useProducts";
+import { useScan } from "../hooks/useScan";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import ProductCard from "../components/products/ProductCard";
+import { Product } from "../../shared/schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { useToast } from "../hooks/use-toast";
 
 const Scan = () => {
   const [searchQuery, setSearchQuery] = useState("");

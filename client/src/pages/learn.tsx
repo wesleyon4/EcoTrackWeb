@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Article } from "@shared/schema";
-import ArticleCard from "@/components/learn/ArticleCard";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+import { Article } from "../../shared/schema";
+import ArticleCard from "../components/learn/ArticleCard";
+import { Input } from "../components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Skeleton } from "../components/ui/skeleton";
+import { Button } from "../components/ui/button";
 
 const Learn = () => {
   const [searchQuery, setSearchQuery] = useState("");

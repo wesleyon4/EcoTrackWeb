@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { RecyclingCenter } from "@shared/schema";
+import { RecyclingCenter } from "../../shared/schema";
 
 export const useRecycling = () => {
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);

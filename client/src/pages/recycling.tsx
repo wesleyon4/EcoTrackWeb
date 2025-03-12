@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
-import { useRecycling } from "@/hooks/useRecycling";
-import RecyclingMap from "@/components/recycling/RecyclingMap";
-import RecyclingCenterCard from "@/components/recycling/RecyclingCenterCard";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useRecycling } from "../hooks/useRecycling";
+import RecyclingMap from "../components/recycling/RecyclingMap";
+import RecyclingCenterCard from "../components/recycling/RecyclingCenterCard";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "../components/ui/select";
+import { Skeleton } from "../components/ui/skeleton";
 
 const Recycling = () => {
   const { userLocation, locationError, useRecyclingCenters, useAcceptedMaterials } = useRecycling();

@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useProducts } from "@/hooks/useProducts";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import ProductCard from "@/components/products/ProductCard";
+import { useAuth } from "../hooks/useAuth";
+import { useProducts } from "../hooks/useProducts";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Checkbox } from "../components/ui/checkbox";
+import { Label } from "../components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import ProductCard from "../components/products/ProductCard";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
 
 const Profile = () => {
   const { useCurrentUser, useLogin, useRegister, useLogout, useUpdatePreferences } = useAuth();
